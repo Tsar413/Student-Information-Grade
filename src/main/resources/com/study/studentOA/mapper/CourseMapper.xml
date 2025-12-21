@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.studentOA.mapper.CourseMapper">
+
+    <select id="getCourseNameTypeCreditByName" resultType="com.study.studentOA.dto.CourseTypeCreditDTO">
+        select tb_course.course_name, tb_course.type, tb_course.credit from tb_course where tb_course.course_name = #{courseName};
+    </select>
+
+</mapper>

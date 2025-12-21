@@ -1,0 +1,73 @@
+package com.study.studentOA.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.study.studentOA.dto.CourseTypeCreditDTO;
+import com.study.studentOA.entity.StudentGrade;
+import com.study.studentOA.mapper.CourseMapper;
+import com.study.studentOA.mapper.StudentGradeMapper;
+import com.study.studentOA.service.IStudentGradeService;
+import com.study.studentOA.util.ChangeGradeParamsUtil;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+@Service
+public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, StudentGrade> implements IStudentGradeService {
+
+    @Resource
+    private CourseMapper courseMapper;
+
+    /**
+     * 保存学生成绩
+     *
+     * @param studentGrade 参数不包含id 不包含重修分数与学分
+     * @return 成功200 失败401
+     */
+    @Override
+    public Integer addSingleStudentGrade(StudentGrade studentGrade) {
+        System.out.println(studentGrade.getCourse());
+        // 获取course的credit与type
+        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
+        // 修改学分 成绩类型
+        ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
+        try {
+            baseMapper.insert(studentGrade);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
+
+    /**
+     * 修改学生成绩
+     *
+     * @param studentGrade 参数不包含id 不包含重修分数与学分
+     * @return 成功200 失败401
+     */
+    @Override
+    public Integer changeSingleStudentGrade(StudentGrade studentGrade) {
+        // 判断对应id是否存在
+        String id = "";
+        String id1 = studentGrade.getStudentId() + studentGrade.getCourse() + "A";
+        String id2 = studentGrade.getStudentId() + studentGrade.getCourse() + "B";
+        if(baseMapper.countStudentGradeByGradeId(id1) != 0){
+            id = id1;
+        } else {
+            id = id2;
+        }
+        // 获取course的credit与type
+        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
+        // 修改学分 成绩类型
+        ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
+        // 编写修改条件
+        UpdateWrapper<StudentGrade> wrapper = new UpdateWrapper<StudentGrade>();
+        wrapper.eq("student_grade_id", id);
+        try {
+            baseMapper.update(studentGrade, wrapper);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
+}
