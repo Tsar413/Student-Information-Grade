@@ -37,4 +37,31 @@ public class ChangeGradeParamsUtil {
         String id = studentGrade.getStudentId() + studentGrade.getCourse() + studentGrade.getType();
         studentGrade.setStudentGradeId(id);
     }
+
+    /**
+     * 工具类 处理补考成绩
+     *
+     * @param studentGrade 学生成绩
+     * @param courseType 课程类型
+     * @param credit 学分
+     */
+    public static void resitStudentCredit(StudentGrade studentGrade, String courseType, Double credit){
+        // 只有课程为必修课且补考合格才可以修改
+        if(courseType.equals("必修课") && studentGrade.getResitGrade() >= 60){
+            studentGrade.setType("B"); // 成绩不合格则类型为B
+            credit = CreditResitChangeUtil.creditResitChange(credit); // 学分打折
+            studentGrade.setCredit(credit);
+        } else {
+            if(courseType.equals("选修课")){
+                studentGrade.setResitGrade(null);
+                studentGrade.setType("B"); // 成绩不合格则类型为B
+                studentGrade.setCredit(0.0); // 选修课学分为0
+            } else {
+                studentGrade.setResitGrade(null);
+                studentGrade.setType("B"); // 成绩不合格则类型为B
+                studentGrade.setCredit(null); // 必修课学分为null
+            }
+        }
+        studentGrade.setStudentGradeId(studentGrade.getStudentId() + studentGrade.getCourse() + studentGrade.getType());
+    }
 }

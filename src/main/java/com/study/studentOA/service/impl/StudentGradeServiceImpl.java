@@ -8,6 +8,7 @@ import com.study.studentOA.mapper.CourseMapper;
 import com.study.studentOA.mapper.StudentGradeMapper;
 import com.study.studentOA.service.IStudentGradeService;
 import com.study.studentOA.util.ChangeGradeParamsUtil;
+import com.study.studentOA.util.CreditResitChangeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +26,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
      * @return 成功200 失败401
      */
     @Override
-    public Integer addSingleStudentGrade(StudentGrade studentGrade) {
+    public Integer addSingleStudentSingleGrade(StudentGrade studentGrade) {
         System.out.println(studentGrade.getCourse());
         // 获取course的credit与type
         CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
@@ -46,7 +47,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
      * @return 成功200 失败401
      */
     @Override
-    public Integer changeSingleStudentGrade(StudentGrade studentGrade) {
+    public Integer changeSingleStudentSingleGrade(StudentGrade studentGrade) {
         // 判断对应id是否存在
         String id = "";
         String id1 = studentGrade.getStudentId() + studentGrade.getCourse() + "A";
@@ -58,8 +59,16 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         }
         // 获取course的credit与type
         CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
-        // 修改学分 成绩类型
-        ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
+        // 判断成绩是否可以修改 标准是是否提供补考成绩
+        if(studentGrade.getResitGrade() == null){
+            // 修改学分 成绩类型
+            ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
+            // 补考成绩置为null
+            studentGrade.setResitGrade(null);
+        } else {
+            // 只有课程为必修课且补考合格才可以修改
+            ChangeGradeParamsUtil.resitStudentCredit(studentGrade, courseNameTypeCreditByName.getType(), studentGrade.getResitGrade());
+        }
         // 编写修改条件
         UpdateWrapper<StudentGrade> wrapper = new UpdateWrapper<StudentGrade>();
         wrapper.eq("student_grade_id", id);
@@ -69,5 +78,13 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
             return 401;
         }
         return 200;
+    }
+
+    @Override
+    public Integer deleteSingleStudentSingleGrade(StudentGrade studentGrade) {
+        String id1 = studentGrade.getStudentId() + studentGrade.getCourse() + "A";
+        String id2 = studentGrade.getStudentId() + studentGrade.getCourse() + "B";
+
+        return 0;
     }
 }

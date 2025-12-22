@@ -32,7 +32,7 @@ public class StudentGrade {
     private String type; // 类型 A B C
 
     @Column(name = "resit_grade")
-    @TableField("resit_grade")
+    @TableField(value = "resit_grade", updateStrategy = FieldStrategy.IGNORED)
     private Double resitGrade; // 重修成绩
 
     public StudentGrade() {

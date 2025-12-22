@@ -13,14 +13,18 @@ public class StudentGradeController {
     @Resource
     private IStudentGradeService iStudentGradeService;
 
-    @PostMapping("/single")
-    public Integer addSingleStudentGrade(@RequestBody StudentGrade studentGrade){
-        return iStudentGradeService.addSingleStudentGrade(studentGrade);
+    @PostMapping("/singleGrade")
+    public Integer addSingleStudentSingleGrade(@RequestBody StudentGrade studentGrade){
+        return iStudentGradeService.addSingleStudentSingleGrade(studentGrade);
     }
 
-    @PutMapping("/single")
-    public Integer updateSingleStudentGrade(@RequestBody StudentGrade studentGrade){
-        return iStudentGradeService.changeSingleStudentGrade(studentGrade);
+    @PutMapping("/singleGrade")
+    public Integer updateSingleStudentSingleGrade(@RequestBody StudentGrade studentGrade){
+        return iStudentGradeService.changeSingleStudentSingleGrade(studentGrade);
     }
 
+    @DeleteMapping("/singleGrade")
+    public Integer deleteSingleStudentSingleGrade(@RequestBody StudentGrade studentGrade){
+        return iStudentGradeService.deleteSingleStudentSingleGrade(studentGrade);
+    }
 }
