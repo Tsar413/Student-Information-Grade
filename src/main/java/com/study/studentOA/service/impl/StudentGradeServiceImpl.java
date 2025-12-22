@@ -3,6 +3,7 @@ package com.study.studentOA.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.studentOA.dto.CourseTypeCreditDTO;
+import com.study.studentOA.dto.GradesClassConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 import com.study.studentOA.mapper.CourseMapper;
 import com.study.studentOA.mapper.StudentGradeMapper;
@@ -12,6 +13,7 @@ import com.study.studentOA.util.CreditResitChangeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, StudentGrade> implements IStudentGradeService {
@@ -80,11 +82,31 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         return 200;
     }
 
+    /**
+     * 删除单个成绩
+     *
+     * @param studentGrade 需要删除的科目
+     * @return 成功200 失败401
+     */
     @Override
     public Integer deleteSingleStudentSingleGrade(StudentGrade studentGrade) {
         String id1 = studentGrade.getStudentId() + studentGrade.getCourse() + "A";
         String id2 = studentGrade.getStudentId() + studentGrade.getCourse() + "B";
+        try {
+            baseMapper.deleteByStudentGradeId(id1); // 根据两种id彻底删除
+            baseMapper.deleteByStudentGradeId(id2);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
 
-        return 0;
+    @Override
+    public List<StudentGrade> getSingleClassGrades(GradesClassConsultDTO consultDTO) {
+        // TODO 去student中根据班级序号获取全部的学生学号
+        // TODO 去course中根据学年，学期获取全部课程信息
+        // TODO 根据学生学号，课程获取成绩信息
+        // TODO 按照预设数组排序
+        return null;
     }
 }

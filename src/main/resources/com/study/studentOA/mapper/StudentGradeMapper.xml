@@ -8,4 +8,8 @@
         select count(tb_student_grade.student_grade_id) from tb_student_grade where tb_student_grade.student_grade_id = #{studentGradeId};
     </select>
 
+    <delete id="deleteByStudentGradeId">
+        delete from tb_student_grade where tb_student_grade.student_grade_id = #{studentGradeId};
+    </delete>
+
 </mapper>

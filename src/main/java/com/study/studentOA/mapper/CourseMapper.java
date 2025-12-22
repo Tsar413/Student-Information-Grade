@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CourseMapper extends BaseMapper<Course> {
     public CourseTypeCreditDTO getCourseNameTypeCreditByName(String courseName);
-    public void deleteByStudentGradeId(String studentGradeId);
+
 }

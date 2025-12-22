@@ -7,4 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StudentGradeMapper extends BaseMapper<StudentGrade> {
     public Integer countStudentGradeByGradeId(String studentGradeId);
+    public void deleteByStudentGradeId(String studentGradeId);
 }

@@ -1,10 +1,12 @@
 package com.study.studentOA.controller;
 
+import com.study.studentOA.dto.GradesClassConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 import com.study.studentOA.service.IStudentGradeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/studentGrade")
@@ -26,5 +28,10 @@ public class StudentGradeController {
     @DeleteMapping("/singleGrade")
     public Integer deleteSingleStudentSingleGrade(@RequestBody StudentGrade studentGrade){
         return iStudentGradeService.deleteSingleStudentSingleGrade(studentGrade);
+    }
+
+    @GetMapping("/singleClass")
+    public List<StudentGrade> getSingleClassGrades(@RequestBody GradesClassConsultDTO consultDTO){
+        return iStudentGradeService.getSingleClassGrades(consultDTO);
     }
 }
