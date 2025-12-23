@@ -8,4 +8,8 @@
         select tb_course.course_name, tb_course.type, tb_course.credit from tb_course where tb_course.course_name = #{courseName};
     </select>
 
+    <select id="getCoursesFromSchoolYearSemester" resultType="com.study.studentOA.entity.Course">
+        select * from tb_course where tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester};
+    </select>
+
 </mapper>
