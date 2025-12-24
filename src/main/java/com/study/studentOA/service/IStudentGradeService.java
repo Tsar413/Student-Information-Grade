@@ -2,6 +2,7 @@ package com.study.studentOA.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.studentOA.dto.GradesClassConsultDTO;
+import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface IStudentGradeService extends IService<StudentGrade> {
 
 
     List<StudentGrade> getSingleClassGrades(GradesClassConsultDTO consultDTO);
+
+    List<StudentGrade> getSingleStudentGrades(GradesSingleStudentConsultDTO consultDTO);
 }

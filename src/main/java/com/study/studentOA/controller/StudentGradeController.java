@@ -1,6 +1,7 @@
 package com.study.studentOA.controller;
 
 import com.study.studentOA.dto.GradesClassConsultDTO;
+import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 import com.study.studentOA.service.IStudentGradeService;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +34,10 @@ public class StudentGradeController {
     @GetMapping("/singleClass")
     public List<StudentGrade> getSingleClassGrades(@RequestBody GradesClassConsultDTO consultDTO){
         return iStudentGradeService.getSingleClassGrades(consultDTO);
+    }
+
+    @GetMapping("/singleStudent")
+    public List<StudentGrade> getSingleStudentGrades(@RequestBody GradesSingleStudentConsultDTO consultDTO){
+        return iStudentGradeService.getSingleStudentGrades(consultDTO);
     }
 }

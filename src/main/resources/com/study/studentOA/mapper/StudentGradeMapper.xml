@@ -25,4 +25,14 @@
         ORDER BY student_id ASC
     </select>
 
+    <select id="selectGradesByBatchCourses" resultType="com.study.studentOA.entity.StudentGrade">
+        SELECT * FROM tb_student_grade
+        WHERE student_id = #{studentId}
+        AND course IN
+        <foreach collection="courseNames" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+        ORDER BY student_id ASC
+    </select>
+
 </mapper>

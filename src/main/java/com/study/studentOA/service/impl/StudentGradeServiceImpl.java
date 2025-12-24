@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.studentOA.dto.CourseTypeCreditDTO;
 import com.study.studentOA.dto.GradesClassConsultDTO;
+import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
 import com.study.studentOA.entity.Course;
 import com.study.studentOA.entity.Student;
 import com.study.studentOA.entity.StudentGrade;
@@ -107,6 +108,12 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         return 200;
     }
 
+    /**
+     * 根据班级班号 学期 学年查询数据 按照预设排序顺序显示
+     *
+     * @param consultDTO 班号 学期 学年 预设排序顺序的数组
+     * @return 班级成绩的list
+     */
     @Override
     public List<StudentGrade> getSingleClassGrades(GradesClassConsultDTO consultDTO) {
         // student根据班级序号获取全部的学生学号
@@ -153,4 +160,32 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
     }
 
     // TODO 根据学生的id进行查询
+    @Override
+    public List<StudentGrade> getSingleStudentGrades(GradesSingleStudentConsultDTO consultDTO) {
+        // course根据学年，学期获取全部课程信息
+        List<Course> courses = courseMapper.getCoursesFromSchoolYearSemester(consultDTO.getSchoolYear(), consultDTO.getSemester()); // 查询课程
+        List<String> courseNames = new ArrayList<String>();
+        for (Course course : courses) {
+            courseNames.add(course.getCourseName());
+        }
+        // 根据学生学号，课程获取成绩信息
+        List<StudentGrade> studentGrades = baseMapper.selectGradesByBatchCourses(courseNames, consultDTO.getStudentId());
+        // 按照预设数组排序
+        String[] orderArray = consultDTO.getCourseOrder();
+        Map<String, Integer> orderMap = new HashMap<String, Integer>();
+        for (int i = 0; i < orderArray.length; i++) {
+            orderMap.put(orderArray[i], i);
+        }
+        // 核心排序：按课程预设顺序排
+        Collections.sort(studentGrades, new Comparator<StudentGrade>() {
+            @Override
+            public int compare(StudentGrade o1, StudentGrade o2) {
+                // 1. 按课程预设权重排序
+                int weight1 = orderMap.getOrDefault(o1.getCourse(), Integer.MAX_VALUE);
+                int weight2 = orderMap.getOrDefault(o2.getCourse(), Integer.MAX_VALUE);
+                return Integer.compare(weight1, weight2);
+            }
+        });
+        return studentGrades;
+    }
 }
