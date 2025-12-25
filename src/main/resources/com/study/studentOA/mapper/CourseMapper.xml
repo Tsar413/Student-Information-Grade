@@ -12,4 +12,17 @@
         select * from tb_course where tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester};
     </select>
 
+    <select id="getCoursesBySemesterSchoolYearClassId" resultType="com.study.studentOA.entity.Course">
+        select * from tb_course where tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester} and tb_course.classes like concat('%', #{classId}, '%');
+    </select>
+
+    <select id="getCoursesByAllExceptCourseIdClasses" resultType="com.study.studentOA.entity.Course">
+        select * from tb_course where tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester}
+        and tb_course.course_name = #{courseName} and tb_course.credit = #{credit} and tb_course.type = #{type}
+    </select>
+
+    <select id="getMaxId" resultType="Long">
+        select max(course_id) from tb_course;
+    </select>
+
 </mapper>

@@ -159,7 +159,12 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         return studentGrades;
     }
 
-    // TODO 根据学生的id进行查询
+    /**
+     * 根据学生的id进行查询
+     *
+     * @param consultDTO 学号 学期 学年 预设排序顺序的数组
+     * @return 个人成绩的list
+     */
     @Override
     public List<StudentGrade> getSingleStudentGrades(GradesSingleStudentConsultDTO consultDTO) {
         // course根据学年，学期获取全部课程信息

@@ -11,4 +11,8 @@ import java.util.List;
 public interface CourseMapper extends BaseMapper<Course> {
     public CourseTypeCreditDTO getCourseNameTypeCreditByName(String courseName);
     public List<Course> getCoursesFromSchoolYearSemester(String schoolYear, String semester);
+    public List<Course> getCoursesBySemesterSchoolYearClassId(String semester, String schoolYear, String classId);
+    public Course getCoursesByAllExceptCourseIdClasses(String courseName, String schoolYear, Double credit, String semester, String type);
+    public Long getMaxId();
+
 }

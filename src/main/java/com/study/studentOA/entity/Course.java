@@ -13,9 +13,9 @@ import javax.persistence.Table;
 @TableName(value = "tb_course")
 public class Course {
     @Id
-    @Column(name = "course_id", length = 50)
+    @Column(name = "course_id")
     @TableField("course_id")
-    private String courseId;
+    private Long courseId;
 
     @Column(name = "course_name")
     @TableField("course_name")
@@ -31,23 +31,26 @@ public class Course {
 
     private Double credit; // 学分
 
+    private String classes; // 班级 格式: 2501|2502|2503|
+
     public Course() {
     }
 
-    public Course(String courseId, String courseName, String schoolYear, String semester, String type, Double credit) {
+    public Course(Long courseId, String courseName, String schoolYear, String semester, String type, Double credit, String classes) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.schoolYear = schoolYear;
         this.semester = semester;
         this.type = type;
         this.credit = credit;
+        this.classes = classes;
     }
 
-    public String getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(String courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
@@ -91,6 +94,14 @@ public class Course {
         this.credit = credit;
     }
 
+    public String getClasses() {
+        return classes;
+    }
+
+    public void setClasses(String classes) {
+        this.classes = classes;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -100,6 +111,7 @@ public class Course {
                 ", semester='" + semester + '\'' +
                 ", type='" + type + '\'' +
                 ", credit=" + credit +
+                ", classes='" + classes + '\'' +
                 '}';
     }
 }
