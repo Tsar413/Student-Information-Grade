@@ -35,4 +35,9 @@
         ORDER BY student_id ASC
     </select>
 
+    <select id="selectGradesByBatchOldCourseNameSemesterSchoolYear" resultType="com.study.studentOA.entity.StudentGrade">
+        SELECT * FROM tb_student_grade
+        WHERE course = #{oldCourseName} and semester = #{semester} and school_year = #{schoolYear};
+    </select>
+
 </mapper>

@@ -25,4 +25,11 @@
         select max(course_id) from tb_course;
     </select>
 
+    <select id="getCourseNameTypeCreditByNameSemesterSchoolYear" resultType="com.study.studentOA.dto.CourseTypeCreditDTO">
+        select tb_course.course_name, tb_course.type, tb_course.credit from tb_course where tb_course.course_name = #{course} and tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester} ;
+    </select>
+
+    <select id="getCoursesByCourseNameSchoolYearSemester" resultType="com.study.studentOA.entity.Course">
+        select * from tb_course where tb_course.course_name = #{courseName} and tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester};
+    </select>
 </mapper>

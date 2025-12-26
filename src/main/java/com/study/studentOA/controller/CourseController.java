@@ -22,4 +22,9 @@ public class CourseController {
     public Integer addNewCourse(@RequestBody Course course){
         return iCourseService.addNewCourse(course);
     }
+
+    @PutMapping("/courses")
+    public Integer changeCourse(@RequestBody Course course){
+        return iCourseService.changeCourse(course);
+    }
 }

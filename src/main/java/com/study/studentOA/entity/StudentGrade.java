@@ -24,6 +24,12 @@ public class StudentGrade {
 
     private String course;
 
+    @Column(name = "school_year")
+    @TableField("school_year")
+    private String schoolYear;
+
+    private String semester;
+
     private Double grade;
 
     @TableField(updateStrategy = FieldStrategy.IGNORED)
@@ -38,10 +44,12 @@ public class StudentGrade {
     public StudentGrade() {
     }
 
-    public StudentGrade(String studentGradeId, String studentId, String course, Double grade, Double credit, String type, Double resitGrade, Double resitCredit) {
+    public StudentGrade(String studentGradeId, String studentId, String course, String schoolYear, String semester, Double grade, Double credit, String type, Double resitGrade) {
         this.studentGradeId = studentGradeId;
         this.studentId = studentId;
         this.course = course;
+        this.schoolYear = schoolYear;
+        this.semester = semester;
         this.grade = grade;
         this.credit = credit;
         this.type = type;
@@ -104,12 +112,30 @@ public class StudentGrade {
         this.resitGrade = resitGrade;
     }
 
+    public String getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(String schoolYear) {
+        this.schoolYear = schoolYear;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
     @Override
     public String toString() {
         return "StudentGrade{" +
                 "studentGradeId='" + studentGradeId + '\'' +
                 ", studentId='" + studentId + '\'' +
                 ", course='" + course + '\'' +
+                ", schoolYear='" + schoolYear + '\'' +
+                ", semester='" + semester + '\'' +
                 ", grade=" + grade +
                 ", credit=" + credit +
                 ", type='" + type + '\'' +

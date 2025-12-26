@@ -9,4 +9,6 @@ public interface ICourseService extends IService<Course> {
     List<Course> getCoursesBySemesterSchoolYearClassId(Course course);
 
     Integer addNewCourse(Course course);
+
+    Integer changeCourse(Course course);
 }

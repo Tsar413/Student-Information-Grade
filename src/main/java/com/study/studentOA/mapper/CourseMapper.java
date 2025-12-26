@@ -14,5 +14,6 @@ public interface CourseMapper extends BaseMapper<Course> {
     public List<Course> getCoursesBySemesterSchoolYearClassId(String semester, String schoolYear, String classId);
     public Course getCoursesByAllExceptCourseIdClasses(String courseName, String schoolYear, Double credit, String semester, String type);
     public Long getMaxId();
-
+    public CourseTypeCreditDTO getCourseNameTypeCreditByNameSemesterSchoolYear(String course, String semester, String schoolYear);
+    public Course getCoursesByCourseNameSchoolYearSemester(String courseName, String schoolYear, String semester);
 }

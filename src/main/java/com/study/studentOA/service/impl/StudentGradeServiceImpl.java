@@ -38,7 +38,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
     public Integer addSingleStudentSingleGrade(StudentGrade studentGrade) {
         System.out.println(studentGrade.getCourse());
         // 获取course的credit与type
-        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
+        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByNameSemesterSchoolYear(studentGrade.getCourse(), studentGrade.getSemester(), studentGrade.getSchoolYear());
         // 修改学分 成绩类型
         ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
         try {
@@ -67,7 +67,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
             id = id2;
         }
         // 获取course的credit与type
-        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByName(studentGrade.getCourse());
+        CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByNameSemesterSchoolYear(studentGrade.getCourse(), studentGrade.getSemester(), studentGrade.getSchoolYear());
         // 判断成绩是否可以修改 标准是是否提供补考成绩
         if(studentGrade.getResitGrade() == null){
             // 修改学分 成绩类型
