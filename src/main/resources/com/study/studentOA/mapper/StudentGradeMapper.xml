@@ -40,4 +40,16 @@
         WHERE course = #{oldCourseName} and semester = #{semester} and school_year = #{schoolYear};
     </select>
 
+    <delete id="deleteByStudentIdCourseSemesterSchoolYear">
+        delete from tb_student_grade where course = #{course} and semester = #{semester} and school_year = #{schoolYear} and
+        student_id in
+        <foreach collection="studentIds" item="studentId" open="(" separator="," close=")">
+            #{studentId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByCourseSemesterSchoolYear">
+        delete from tb_student_grade where course = #{course} and semester = #{semester} and school_year = #{schoolYear};
+    </delete>
+
 </mapper>

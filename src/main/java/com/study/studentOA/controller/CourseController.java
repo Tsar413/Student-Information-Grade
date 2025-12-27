@@ -27,4 +27,14 @@ public class CourseController {
     public Integer changeCourse(@RequestBody Course course){
         return iCourseService.changeCourse(course);
     }
+
+    @DeleteMapping("/classes")
+    public Integer deleteClasses(@RequestBody Course course){
+        return iCourseService.deleteClasses(course);
+    }
+
+    @DeleteMapping("/courses")
+    public Integer deleteCourses(@RequestBody Course course){
+        return iCourseService.deleteCourses(course);
+    }
 }

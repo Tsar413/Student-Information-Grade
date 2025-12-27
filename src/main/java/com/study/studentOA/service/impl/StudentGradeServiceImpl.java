@@ -28,6 +28,8 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
     @Resource
     private StudentMapper studentMapper;
 
+    // TODO 接收Excel批量导入成绩
+
     /**
      * 保存学生成绩
      *
@@ -41,6 +43,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         CourseTypeCreditDTO courseNameTypeCreditByName = courseMapper.getCourseNameTypeCreditByNameSemesterSchoolYear(studentGrade.getCourse(), studentGrade.getSemester(), studentGrade.getSchoolYear());
         // 修改学分 成绩类型
         ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
+        System.out.println(studentGrade);
         try {
             baseMapper.insert(studentGrade);
         } catch (Exception e) {
@@ -76,7 +79,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
             studentGrade.setResitGrade(null);
         } else {
             // 只有课程为必修课且补考合格才可以修改
-            ChangeGradeParamsUtil.resitStudentCredit(studentGrade, courseNameTypeCreditByName.getType(), studentGrade.getResitGrade());
+            ChangeGradeParamsUtil.resitStudentCredit(studentGrade, courseNameTypeCreditByName.getType(), courseNameTypeCreditByName.getCredit());
         }
         // 编写修改条件
         UpdateWrapper<StudentGrade> wrapper = new UpdateWrapper<StudentGrade>();

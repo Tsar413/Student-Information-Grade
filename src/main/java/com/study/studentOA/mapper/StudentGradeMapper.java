@@ -13,5 +13,6 @@ public interface StudentGradeMapper extends BaseMapper<StudentGrade> {
     public List<StudentGrade> selectGradesByBatch(List<String> courseNames, List<String> studentIds);
     public List<StudentGrade> selectGradesByBatchCourses(List<String> courseNames, String studentId);
     public List<StudentGrade> selectGradesByBatchOldCourseNameSemesterSchoolYear(String oldCourseName, String semester, String schoolYear);
-
+    public void deleteByStudentIdCourseSemesterSchoolYear(List<String> studentIds, String course, String semester, String schoolYear);
+    public void deleteByCourseSemesterSchoolYear(String course, String semester, String schoolYear);
 }

@@ -32,4 +32,8 @@
     <select id="getCoursesByCourseNameSchoolYearSemester" resultType="com.study.studentOA.entity.Course">
         select * from tb_course where tb_course.course_name = #{courseName} and tb_course.school_year = #{schoolYear} and tb_course.semester = #{semester};
     </select>
+
+    <delete id="deleteByCourseSemesterSchoolYear">
+        delete from tb_course where course_name = #{course} and semester = #{semester} and school_year = #{schoolYear};
+    </delete>
 </mapper>

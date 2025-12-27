@@ -11,4 +11,8 @@ public interface ICourseService extends IService<Course> {
     Integer addNewCourse(Course course);
 
     Integer changeCourse(Course course);
+
+    Integer deleteClasses(Course course);
+
+    Integer deleteCourses(Course course);
 }

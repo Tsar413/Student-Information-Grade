@@ -4,22 +4,30 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.study.studentOA.entity.Course;
+import com.study.studentOA.entity.Student;
 import com.study.studentOA.entity.StudentGrade;
 import com.study.studentOA.mapper.CourseMapper;
 import com.study.studentOA.mapper.StudentGradeMapper;
+import com.study.studentOA.mapper.StudentMapper;
 import com.study.studentOA.service.ICourseService;
 import com.study.studentOA.service.IStudentGradeService;
+import com.study.studentOA.util.ChangeGradeParamsUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements ICourseService {
 
     @Resource
     private StudentGradeMapper studentGradeMapper;
+
+    @Resource
+    private StudentMapper studentMapper;
 
     @Resource
     private IStudentGradeService iStudentGradeService;
@@ -49,9 +57,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
                 course.getCourseName(), course.getSchoolYear(), course.getCredit(),
                 course.getSemester(), course.getType());
         // 2. 如果不一致则新增
-        if(course1 == null){
+        if (course1 == null) {
             Long maxId = baseMapper.getMaxId();
-            if(maxId == null){
+            if (maxId == null) {
                 maxId = 1L;
             } else {
                 maxId++;
@@ -71,7 +79,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         QueryWrapper<Course> wrapper1 = new QueryWrapper<Course>();
         wrapper1.eq("course_id", course.getCourseId());
         Course course2 = baseMapper.selectList(wrapper1).get(0);
-        if(course2.getClasses().contains(course.getClasses())){
+        if (course2.getClasses().contains(course.getClasses())) {
             return 402;
         }
         // 添加班级
@@ -86,10 +94,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         return 200;
     }
 
-    // TODO 修改删除课程 联动成绩表
-
     /**
-     * 修改课程除去班级与id
+     * 修改课程除去班级,id,类型 联动成绩表
      *
      * @param course 需要修改的课程信息
      * @return 200 成功 401 失败 402 已经存在同名课程
@@ -103,50 +109,114 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         Course oldCourse = baseMapper.selectList(wrapper1).get(0);
         // 判断新的课程名能否修改 判断在指定学期学年下是否有相同名字的课
         Course judgeCourse = baseMapper.getCoursesByCourseNameSchoolYearSemester(course.getCourseName(), course.getSchoolYear(), course.getSemester());
-        if(judgeCourse != null){
+        // 判断保存课程的id与修改课程的id是否一致 一致不可以修改
+        if (!Objects.equals(course.getCourseId(), judgeCourse.getCourseId())) {
             return 402;
         }
+        // 查询所有旧课程名的成绩
+        List<StudentGrade> studentGrades = studentGradeMapper.selectGradesByBatchOldCourseNameSemesterSchoolYear(oldCourse.getCourseName(), oldCourse.getSemester(), oldCourse.getSchoolYear());
         // 修改课程名 学期 学年 判断课程名是否修改
-        if(!oldCourse.getCourseName().equals(course.getCourseName()) || !oldCourse.getSchoolYear().equals(course.getSchoolYear()) || !oldCourse.getSemester().equals(course.getSemester())){
-            // 1. 查询所有旧课程名的成绩
-            List<StudentGrade> studentGrades = studentGradeMapper.selectGradesByBatchOldCourseNameSemesterSchoolYear(oldCourse.getCourseName(), oldCourse.getSemester(), oldCourse.getSchoolYear());
-            // 2. 修改旧课程名成绩的课程名字 id 学期 学年
-            for (StudentGrade studentGrade : studentGrades) {
-                studentGrade.setStudentGradeId(studentGrade.getStudentId() + course.getCourseName() + studentGrade.getType());
-                studentGrade.setCourse(course.getCourseName());
-                studentGrade.setSchoolYear(course.getSchoolYear());
-                studentGrade.setSemester(course.getSemester());
-            }
-            // 3. 删除旧有成绩数据
-            QueryWrapper<StudentGrade> deleteWrapper = new QueryWrapper<>();
-            deleteWrapper.eq("course", oldCourse.getCourseName())
-                    .eq("semester", oldCourse.getSemester())
-                    .eq("school_year", oldCourse.getSchoolYear());
-            studentGradeMapper.delete(deleteWrapper);
-            // 4. 插入新的成绩
-            iStudentGradeService.saveBatch(studentGrades);
-            // 5. 在课程表中修改课程名 学期 学年
-            oldCourse.setCourseName(course.getCourseName());
-            oldCourse.setSchoolYear(course.getSchoolYear());
-            oldCourse.setSemester(course.getSemester());
-            UpdateWrapper<Course> wrapper2 = new UpdateWrapper<Course>();
-            wrapper2.eq("course_id", course.getCourseId());
-            try {
-                baseMapper.update(oldCourse, wrapper2);
-            } catch (Exception e) {
-                return 401;
+        // 1. 修改旧课程名成绩的课程名字 id 学期 学年 学分 类型
+        for (StudentGrade studentGrade : studentGrades) {
+            studentGrade.setStudentGradeId(studentGrade.getStudentId() + course.getCourseName() + studentGrade.getType());
+            studentGrade.setCourse(course.getCourseName());
+            studentGrade.setSchoolYear(course.getSchoolYear());
+            studentGrade.setSemester(course.getSemester());
+            ChangeGradeParamsUtil.changeStudentGradeCreditType(studentGrade, course.getType(), course.getCredit());
+            if(studentGrade.getResitGrade() != null){
+                ChangeGradeParamsUtil.resitStudentCredit(studentGrade, course.getType(), course.getCredit());
             }
         }
+        // 2. 删除旧有成绩数据
+        QueryWrapper<StudentGrade> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("course", oldCourse.getCourseName())
+                .eq("semester", oldCourse.getSemester())
+                .eq("school_year", oldCourse.getSchoolYear());
+        studentGradeMapper.delete(deleteWrapper);
+        // 3. 插入新的成绩
+        iStudentGradeService.saveBatch(studentGrades);
+        // 4. 在课程表中修改课程名 学期 学年 学分 类型
+        oldCourse.setCourseName(course.getCourseName());
+        oldCourse.setSchoolYear(course.getSchoolYear());
+        oldCourse.setSemester(course.getSemester());
+        oldCourse.setCredit(course.getCredit());
+        oldCourse.setType(course.getType());
+        UpdateWrapper<Course> wrapper2 = new UpdateWrapper<Course>();
+        wrapper2.eq("course_id", course.getCourseId());
+        try {
+            baseMapper.update(oldCourse, wrapper2);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
 
-        // TODO 修改学分
-        // TODO 1. 修改成绩单中的学分
-        // TODO 1.1 如果成绩合格 学分直接修改
-        // TODO 1.2 如果成绩不合格 则学分按照规则进行修改
-        // TODO 2. 在课程表中修改学分
+    /**
+     * 删除指定课程的班级
+     *
+     * @param course 包含需要删除的班级id
+     * @return 200 成功 401 失败
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class) // 开启事务，捕获异常后自动回滚
+    public Integer deleteClasses(Course course) {
+        // 1. 删除对应班级的学生成绩
+        // 1.1 从student表中读取对应学生的学号
+        List<Student> students = studentMapper.getStudentsByClassId(course.getClasses());
+        List<String> studentIds = new ArrayList<String>();
+        for (Student student : students) {
+            studentIds.add(student.getStudentId());
+        }
+        // 1.2 从成绩表中删除对应学号 课程名 学年 学期的成绩
+        try {
+            studentGradeMapper.deleteByStudentIdCourseSemesterSchoolYear(studentIds, course.getCourseName(), course.getSemester(), course.getSchoolYear());
+        } catch (Exception e) {
+            return 401;
+        }
+        // 2. 找到课程表中的对应课程
+        // 根据course_id查询课程数据
+        QueryWrapper<Course> wrapper1 = new QueryWrapper<Course>();
+        wrapper1.eq("course_id", course.getCourseId());
+        Course oldCourse = baseMapper.selectList(wrapper1).get(0);
+        // 3. 修改班级并重新赋值
+        if(oldCourse.getClasses().contains(course.getClasses())){
+            int start = oldCourse.getClasses().indexOf(course.getClasses()) - 1;
+            int end = start + 5;
+            String newClasses = "";
+            if(end >= oldCourse.getClasses().length()){
+                newClasses = oldCourse.getClasses().substring(0, start);
+            } else {
+                newClasses = oldCourse.getClasses().substring(0, start) + oldCourse.getClasses().substring(end);
+            }
+            oldCourse.setClasses(newClasses);
+        }
+        UpdateWrapper<Course> wrapper2 = new UpdateWrapper<Course>();
+        wrapper2.eq("course_id", course.getCourseId());
+        try {
+            baseMapper.update(oldCourse, wrapper2);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
 
-        // TODO 修改类型
-        // TODO 1. 修改成绩表的类型
-        // TODO 2. 修改课程表中的类型
-        return 0;
+    /**
+     * 删除指定课程
+     *
+     * @param course 包含需要删除的课程id
+     * @return 200 成功 401 失败
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class) // 开启事务，捕获异常后自动回滚
+    public Integer deleteCourses(Course course) {
+        try {
+            // 1. 删除对应课程的学生成绩
+            studentGradeMapper.deleteByCourseSemesterSchoolYear(course.getCourseName(), course.getSemester(), course.getSchoolYear());
+            // 2. 删除对应课程
+            baseMapper.deleteByCourseSemesterSchoolYear(course.getCourseName(), course.getSemester(), course.getSchoolYear());
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
     }
 }

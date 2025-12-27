@@ -53,11 +53,11 @@ public class ChangeGradeParamsUtil {
             studentGrade.setCredit(credit);
         } else {
             if(courseType.equals("选修课")){
-                studentGrade.setResitGrade(null);
+                // studentGrade.setResitGrade(null);
                 studentGrade.setType("B"); // 成绩不合格则类型为B
                 studentGrade.setCredit(0.0); // 选修课学分为0
             } else {
-                studentGrade.setResitGrade(null);
+                // studentGrade.setResitGrade(null);
                 studentGrade.setType("B"); // 成绩不合格则类型为B
                 studentGrade.setCredit(null); // 必修课学分为null
             }
