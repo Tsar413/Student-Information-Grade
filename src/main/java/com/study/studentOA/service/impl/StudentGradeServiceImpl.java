@@ -30,6 +30,9 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
     @Resource
     private StudentMapper studentMapper;
 
+    @Resource
+    private IStudentGradeService iStudentGradeService;
+
     /**
      * 保存学生成绩
      *
@@ -206,7 +209,6 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
      * @param schoolYear 学年
      * @return 成功200 失败401
      */
-    // TODO 接收Excel批量导入成绩
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer saveMultiplyStudentGrades(MultipartFile file, String courseName, String semester, String schoolYear) throws IOException {
@@ -217,6 +219,52 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
                 .doReadSync();
         System.out.println(list);
         System.out.println(courseName + " " + semester + " " + schoolYear);
-        return 0;
+        // 2. 保存成绩
+        // 2.1 根据课程 学期 学年获取课程信息
+        Course course = courseMapper.getCoursesByCourseNameSchoolYearSemester(courseName, schoolYear, semester);
+        // 2.2 修改list 转为StudentGrade
+        List<StudentGrade> studentGrades = new ArrayList<StudentGrade>();
+        for (StudentGradeExcelDTO studentGradeExcelDTO : list) {
+            StudentGrade studentGrade = new StudentGrade();
+            // 设置分数
+            studentGrade.setGrade(studentGradeExcelDTO.getScore());
+            // 设置学生id
+            studentGrade.setStudentId(studentGradeExcelDTO.getStudentId());
+            // 设置A B
+            studentGrade.setType(studentGradeExcelDTO.getScore() >= 60 ? "A" : "B");
+            // 设置课程名
+            studentGrade.setCourse(courseName);
+            // 设置学期
+            studentGrade.setSemester(semester);
+            // 设置学年
+            studentGrade.setSchoolYear(schoolYear);
+            // 设置成绩id
+            studentGrade.setStudentGradeId(studentGrade.getStudentId() + studentGrade.getCourse() + studentGrade.getType());
+            // 设置学分
+            if(course.getType().equals("选修")){
+                if(studentGradeExcelDTO.getScore() < 60){
+                    studentGrade.setCredit(0.0);
+                } else {
+                    studentGrade.setCredit(course.getCredit());
+                }
+            } else {
+                if(studentGradeExcelDTO.getScore() >= 60){
+                    studentGrade.setCredit(course.getCredit());
+                }
+            }
+            // 添加到list
+            studentGrades.add(studentGrade);
+        }
+        // 2.3 批量保存
+        try {
+            iStudentGradeService.saveBatch(studentGrades);
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
     }
+
+    // TODO 批量修改
+
+    // TODO 批量删除
 }
