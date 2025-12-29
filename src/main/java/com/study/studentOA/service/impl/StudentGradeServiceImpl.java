@@ -1,10 +1,9 @@
 package com.study.studentOA.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.study.studentOA.dto.CourseTypeCreditDTO;
-import com.study.studentOA.dto.GradesClassConsultDTO;
-import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
+import com.study.studentOA.dto.*;
 import com.study.studentOA.entity.Course;
 import com.study.studentOA.entity.Student;
 import com.study.studentOA.entity.StudentGrade;
@@ -14,8 +13,11 @@ import com.study.studentOA.mapper.StudentMapper;
 import com.study.studentOA.service.IStudentGradeService;
 import com.study.studentOA.util.ChangeGradeParamsUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,8 +29,6 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
 
     @Resource
     private StudentMapper studentMapper;
-
-    // TODO 接收Excel批量导入成绩
 
     /**
      * 保存学生成绩
@@ -195,5 +195,28 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
             }
         });
         return studentGrades;
+    }
+
+    /**
+     * 该方法的作用在于批量读取Excel文件中的成绩并保存
+     *
+     * @param file excel文件
+     * @param courseName 课程名
+     * @param semester 学期
+     * @param schoolYear 学年
+     * @return 成功200 失败401
+     */
+    // TODO 接收Excel批量导入成绩
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveMultiplyStudentGrades(MultipartFile file, String courseName, String semester, String schoolYear) throws IOException {
+        // 1. 读取 Excel 文件内容到 List
+        List<StudentGradeExcelDTO> list = EasyExcel.read(file.getInputStream())
+                .head(StudentGradeExcelDTO.class)
+                .sheet()
+                .doReadSync();
+        System.out.println(list);
+        System.out.println(courseName + " " + semester + " " + schoolYear);
+        return 0;
     }
 }

@@ -31,7 +31,7 @@ public class Course {
 
     private Double credit; // 学分
 
-    private String classes; // 班级 格式: 2501|2502|2503|
+    private String classes; // 班级 格式: 2501|2502|2503
 
     public Course() {
     }
