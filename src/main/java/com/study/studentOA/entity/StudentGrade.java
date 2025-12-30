@@ -1,8 +1,6 @@
 package com.study.studentOA.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +14,7 @@ public class StudentGrade {
     @Id
     @Column(name = "student_grade_id", length = 50)
     @TableField("student_grade_id")
+    @TableId(value = "student_grade_id", type = IdType.INPUT)
     private String studentGradeId;
 
     @Column(name = "student_id")

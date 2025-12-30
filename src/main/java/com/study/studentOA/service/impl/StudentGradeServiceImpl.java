@@ -264,7 +264,21 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
         return 200;
     }
 
-    // TODO 批量修改
+    /**
+     * 批量删除学生的成绩
+     *
+     * @param changeDTO 需要删除的成绩id
+     * @return 成功200 失败401
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteMultiplyStudentGrades(GradesMultiplyStudentsChangeDTO changeDTO) {
+        try {
 
-    // TODO 批量删除
+            baseMapper.deleteBatchIds(Arrays.asList(changeDTO.getStudentGradeIds()));
+        } catch (Exception e) {
+            return 401;
+        }
+        return 200;
+    }
 }

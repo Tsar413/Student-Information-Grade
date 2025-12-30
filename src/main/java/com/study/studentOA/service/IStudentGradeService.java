@@ -2,6 +2,7 @@ package com.study.studentOA.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.study.studentOA.dto.GradesClassConsultDTO;
+import com.study.studentOA.dto.GradesMultiplyStudentsChangeDTO;
 import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,4 +23,6 @@ public interface IStudentGradeService extends IService<StudentGrade> {
     List<StudentGrade> getSingleStudentGrades(GradesSingleStudentConsultDTO consultDTO);
 
     Integer saveMultiplyStudentGrades(MultipartFile file, String courseName, String semester, String schoolYear) throws IOException;
+
+    Integer deleteMultiplyStudentGrades(GradesMultiplyStudentsChangeDTO changeDTO);
 }

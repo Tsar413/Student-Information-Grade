@@ -8,4 +8,8 @@
         select * from tb_student where tb_student.student_class = #{classId};
     </select>
 
+    <select id="getClassesList" resultType="String">
+        select tb_student.student_class from tb_student group by tb_student.student_class;
+    </select>
+
 </mapper>

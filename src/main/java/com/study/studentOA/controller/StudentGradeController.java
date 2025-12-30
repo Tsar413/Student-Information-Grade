@@ -1,6 +1,7 @@
 package com.study.studentOA.controller;
 
 import com.study.studentOA.dto.GradesClassConsultDTO;
+import com.study.studentOA.dto.GradesMultiplyStudentsChangeDTO;
 import com.study.studentOA.dto.GradesSingleStudentConsultDTO;
 import com.study.studentOA.entity.StudentGrade;
 import com.study.studentOA.service.IStudentGradeService;
@@ -49,5 +50,10 @@ public class StudentGradeController {
                                                @RequestParam("semester") String semester,
                                                @RequestParam("schoolYear") String schoolYear) throws IOException {
         return iStudentGradeService.saveMultiplyStudentGrades(file, courseName, semester, schoolYear);
+    }
+
+    @DeleteMapping("/multiplyGrades")
+    public Integer deleteMultiplyStudentGrades(@RequestBody GradesMultiplyStudentsChangeDTO changeDTO){
+        return iStudentGradeService.deleteMultiplyStudentGrades(changeDTO);
     }
 }
