@@ -52,4 +52,8 @@
         delete from tb_student_grade where course = #{course} and semester = #{semester} and school_year = #{schoolYear};
     </delete>
 
+    <delete id="deleteByStudentId">
+        delete from tb_student_grade where tb_student_grade.student_id = #{studentId};
+    </delete>
+
 </mapper>

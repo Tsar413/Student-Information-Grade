@@ -10,4 +10,5 @@ import java.util.List;
 public interface StudentMapper extends BaseMapper<Student> {
     public List<Student> getStudentsByClassId(String classId);
     public List<String> getClassesList();
+    public void deleteByStudentId(String studentId);
 }
