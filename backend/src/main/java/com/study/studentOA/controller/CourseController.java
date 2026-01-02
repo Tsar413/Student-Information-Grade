@@ -14,7 +14,7 @@ public class CourseController {
     private ICourseService iCourseService;
 
     @GetMapping("/courses")
-    public List<Course> getCoursesBySemesterSchoolYearClassId(@RequestBody Course course){
+    public List<Course> getCoursesBySemesterSchoolYearClassId(Course course){
         return iCourseService.getCoursesBySemesterSchoolYearClassId(course);
     }
 
