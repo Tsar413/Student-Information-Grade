@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,12 +36,12 @@ public class StudentGradeController {
     }
 
     @GetMapping("/singleClass")
-    public List<StudentGrade> getSingleClassGrades(@RequestBody GradesClassConsultDTO consultDTO){
+    public List<StudentGrade> getSingleClassGrades(@Valid @ModelAttribute GradesClassConsultDTO consultDTO){
         return iStudentGradeService.getSingleClassGrades(consultDTO);
     }
 
     @GetMapping("/singleStudent")
-    public List<StudentGrade> getSingleStudentGrades(@RequestBody GradesSingleStudentConsultDTO consultDTO){
+    public List<StudentGrade> getSingleStudentGrades(@Valid @ModelAttribute GradesSingleStudentConsultDTO consultDTO){
         return iStudentGradeService.getSingleStudentGrades(consultDTO);
     }
 

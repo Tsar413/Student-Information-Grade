@@ -241,7 +241,7 @@ public class StudentGradeServiceImpl extends ServiceImpl<StudentGradeMapper, Stu
             // 设置成绩id
             studentGrade.setStudentGradeId(studentGrade.getStudentId() + studentGrade.getCourse() + studentGrade.getType());
             // 设置学分
-            if(course.getType().equals("选修")){
+            if(course.getType().equals("选修课")){
                 if(studentGradeExcelDTO.getScore() < 60){
                     studentGrade.setCredit(0.0);
                 } else {

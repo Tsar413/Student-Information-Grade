@@ -110,7 +110,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         // 判断新的课程名能否修改 判断在指定学期学年下是否有相同名字的课
         Course judgeCourse = baseMapper.getCoursesByCourseNameSchoolYearSemester(course.getCourseName(), course.getSchoolYear(), course.getSemester());
         // 判断保存课程的id与修改课程的id是否一致 一致不可以修改
-        if (!Objects.equals(course.getCourseId(), judgeCourse.getCourseId())) {
+        if (judgeCourse != null && !Objects.equals(course.getCourseId(), judgeCourse.getCourseId())) {
             return 402;
         }
         // 查询所有旧课程名的成绩
