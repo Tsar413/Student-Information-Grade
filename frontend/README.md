@@ -1,9 +1,3 @@
-编写一份清晰的 **README.md** 是项目管理中非常重要的一步，它能帮助其他开发者（或未来的你）快速理解如何启动、开发和维护这个教务管理系统前端。
-
-以下我为你草拟了一份标准的前端项目 README 模板，你可以根据实际情况微调：
-
----
-
 # 教务管理系统 - 前端项目 (Student Management System FE)
 
 基于 **React 18** 和 **Ant Design 5.x** 构建的教务管理系统前端界面，主要功能涵盖成绩录入、批量操作及学生数据可视化。
@@ -90,10 +84,3 @@ src/
 3. 推送到分支 (`git push origin feature/AmazingFeature`)
 4. 开启一个 Pull Request
 
----
-
-### 💡 小贴士
-
-如果你希望在 README 中展示项目截图，可以将图片放在 `public/screenshots` 目录下，并使用 `![截图描述](./public/screenshots/demo.png)` 引用。
-
-**接下来，你想让我帮你补充具体的部署流程（如 Nginx 配置），还是编写后端 API 的联调说明文档？**
