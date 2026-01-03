@@ -46,7 +46,7 @@ yarn install
 在项目根目录创建 `.env.development` 文件，配置后端接口地址：
 
 ```env
-VITE_API_BASE_URL = http://localhost:8080
+VITE_API_BASE_URL = http://localhost:8097
 
 ```
 
