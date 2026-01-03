@@ -1,4 +1,3 @@
-这是一份根据你提供的 `apis.md` 和 `pom.xml` 整合而成的后端项目 **README.md**。它详细列出了技术栈、项目配置以及核心 API 规范。
 
 ```markdown
 # 教务管理系统 - 后端项目 (study-studentOA)
@@ -96,11 +95,3 @@ mvn spring-boot:run
 * **EasyExcel**: 3.3.2
 * **Java Version**: 1.8
 
-```
-
-### 说明：
-1. **技术栈提取**：从你的 `pom.xml` 中识别出了 **MyBatis-Plus**、**EasyExcel**、**JPA** 和 **Spring Boot 2.1.0**。
-2. **批量处理规范**：根据 `apis.md` 里的 binary/file 定义，特意标注了 **EasyExcel** 的使用，这对后续维护人员非常重要。
-3. **结构化**：将接口按模块（成绩、课程、学生）分类，方便查找。
-
-```
